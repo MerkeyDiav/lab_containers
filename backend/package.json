@@ -1,0 +1,12 @@
+{
+  "name": "cloud-todo-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Cloud Todo List - Le Cloud Facile Lab",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
