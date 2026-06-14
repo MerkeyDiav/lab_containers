@@ -131,6 +131,15 @@
                         ${task.done ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
                     </button>
                     <span class="flex-1 ${task.done ? 'line-through text-slate-500' : 'text-white'}">${escapeHtml(task.title)}</span>
+                    <button 
+                        onclick="deleteTask(${task.id})" 
+                        class="flex-shrink-0 p-2 text-slate-500 hover:text-red-400 transition-colors"
+                        title="Supprimer"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
                 </div>
             `).join('');
 
@@ -141,18 +150,32 @@
             completedTasksEl.textContent = `${completed} terminée${completed !== 1 ? 's' : ''}`;
         }
 
-        // Basculer l'état d'une tâche (simulation locale)
+        // Basculer l'état d'une tâche (via API PUT)
         async function toggleTask(id) {
             try {
                 const response = await fetch(apiUrl);
                 const tasks = await response.json();
                 const task = tasks.find(t => t.id === id);
                 if (task) {
-                    task.done = !task.done;
-                    // Pour une vraie implémentation, il faudrait une route PUT/PATCH
-                    // Ici on recharge juste pour afficher
+                    await fetch(`${apiUrl}/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ done: !task.done })
+                    });
                     loadTasks();
                 }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Supprimer une tâche
+        async function deleteTask(id) {
+            try {
+                await fetch(`${apiUrl}/${id}`, {
+                    method: 'DELETE'
+                });
+                loadTasks();
             } catch (error) {
                 console.error('Erreur:', error);
             }

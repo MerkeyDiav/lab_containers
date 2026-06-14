@@ -4,10 +4,10 @@ FROM node:18-alpine
 # Répertoire de travail
 WORKDIR /app
 
-# Copie du package.json AVANT l'installation
-COPY package.json .
+# Copie du package.json et package-lock.json AVANT l'installation
+COPY package*.json ./
 
-# Installation des dépendances (dont express)
+# Installation des dépendances (express + mysql2)
 RUN npm install
 
 # Copie du code source
